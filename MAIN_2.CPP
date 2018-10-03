@@ -23,14 +23,14 @@ class menu : public app
 		menu(char* a = "", char* b = "", char* c = "", char* d = "", char* e = "", char* f = "", char* g = "", char* h = "", char* i = "", char* j = "") : title(a)
 		{
 			options[0] = b;
-			options[1] = c;
-			options[2] = d;
-			options[3] = e;
-			options[4] = f;
-			options[5] = g;
-			options[6] = h;
-			options[7] = i;
-			options[8] = j;
+			opt[1] = c;
+			opt[2] = d;
+			opt[3] = e;
+			opt[4] = f;
+			opt[5] = g;
+			opt[6] = h;
+			opt[7] = i;
+			opt[8] = j;
 		}
 		void io();
 		unsigned short int get_selected_option()
@@ -66,7 +66,7 @@ void menu :: io()
 		}
 		else
 		{
-			cout << "Invalid Option";
+			cout << "Option is not valid.";
 			getch();
 		}
 	}
