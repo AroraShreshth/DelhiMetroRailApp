@@ -66,17 +66,17 @@ void menu :: io()
 		}
 		else
 		{
-			cout << "Invalid Option";
+			cout << "Invalid Selection";
 			getch();
 		}
 	}
 }
 
 menu welcome_menu("Welcome to Delhi Metro", "Rider", "Admin");
-menu rider_menu("Rider", "Use Metro Pass", "Buy New Metro Pass", "Cash");
+menu rider_menu("Rider", "Use Metro ticket", "Buy New Metro ticket", "Cash");
 menu uid_different_menu("Please enter a different username", "Enter");
-menu uid_not_found_menu("Username doesn't exist", "Re-Enter Username", "Buy New Metro Pass");
-menu uid_pass_not_match_menu("Incorrect Password", "Re-Enter Password", "Re-Enter Username", "Buy New Metro Pass");
+menu uid_not_found_menu("Username doesn't exist", "Re-Enter Username", "Buy New Metro ticket");
+menu uid_ticket_not_match_menu("Incorrect ticketword", "Re-Enter ticketword", "Re-Enter Username", "Buy New Metro ticket");
 menu admin_menu("Admin");
 
 
@@ -84,16 +84,16 @@ class user : public app
 {
 	protected:
 	public:
-		char passwd[DATA];
+		char ticketwd[DATA];
 };
 
 class rider : public user
 {
 	public:
-		unsigned short int buy_pass();
-		unsigned short int validate_pass();
+		unsigned short int buy_ticket();
+		unsigned short int validate_ticket();
 		static unsigned short int uid_exists(char[DATA]);
-		static unsigned short int uid_passwd_match(char[DATA], char[DATA]);
+		static unsigned short int uid_ticketwd_match(char[DATA], char[DATA]);
 };
 
 unsigned short int rider :: uid_exists(char a[DATA])
@@ -121,7 +121,7 @@ unsigned short int rider :: uid_exists(char a[DATA])
 	}
 }
 
-unsigned short int rider :: uid_passwd_match(char a[DATA], char b[DATA])
+unsigned short int rider :: uid_ticketwd_match(char a[DATA], char b[DATA])
 {
 	ifstream riders_file("RAIL/RIDERS.DAT", ios::in | ios::binary);
 	rider read_rider;
@@ -136,7 +136,7 @@ unsigned short int rider :: uid_passwd_match(char a[DATA], char b[DATA])
 			}
 			if (strcmp(read_rider.uid, a) == 0)
 			{
-				return (strcmp(read_rider.passwd, b) == 0);
+				return (strcmp(read_rider.ticketwd, b) == 0);
 			}
 		}
 	}
@@ -146,20 +146,20 @@ unsigned short int rider :: uid_passwd_match(char a[DATA], char b[DATA])
 	}
 }
 
-unsigned short int rider :: buy_pass()
+unsigned short int rider :: buy_ticket()
 {
 	while(1)
 	{
 		clrscr();
-		cout << "Buy New Metro Pass\n\nNew Username: ";
+		cout << "Buy New Metro ticket\n\nNew Username: ";
 		char a[DATA], b[DATA];
 		gets(a);
 		if (!rider::uid_exists(a))
 		{
 			strcpy(this->uid, a);		
-			cout << "New Password: ";
+			cout << "New ticketword: ";
 			gets(b);
-			strcpy(this->passwd, b);		
+			strcpy(this->ticketwd, b);		
 			ofstream riders_file("RAIL/RIDERS.DAT", ios::out | ios::app | ios::binary);
 			riders_file.write((char*)this, sizeof(rider));
 			riders_file.close();
@@ -177,12 +177,12 @@ unsigned short int rider :: buy_pass()
 	}
 }
 
-unsigned short int rider :: validate_pass()
+unsigned short int rider :: validate_ticket()
 {
 	while(1)
 	{
 		clrscr();
-		cout << "Use Metro Pass\n\n";
+		cout << "Use Metro ticket\n\n";
 		char a[DATA], b[DATA];
 		cout << "Username: ";
 		if (!rider::uid_exists(a))
@@ -195,18 +195,18 @@ unsigned short int rider :: validate_pass()
 		}
 		if (rider::uid_exists(a))
 		{
-			cout << "Password: ";
+			cout << "ticketword: ";
 			gets(b);
-			if (rider::uid_passwd_match(a, b))
+			if (rider::uid_ticketwd_match(a, b))
 			{
 				strcpy(this->uid, a);
-				strcpy(this->passwd, b);
+				strcpy(this->ticketwd, b);
 				return 10;
 			}		
 			else
 			{
-				uid_pass_not_match_menu.io();
-				int comm = uid_pass_not_match_menu.get_selected_option();
+				uid_ticket_not_match_menu.io();
+				int comm = uid_ticket_not_match_menu.get_selected_option();
 				if (comm == 2)
 				{
 					strcpy(a, NULL);
@@ -248,19 +248,19 @@ void main()
 					{
 						rider current_rider;
 						case 1:
-							switch (current_rider.validate_pass())
+							switch (current_rider.validate_ticket())
 							{
 								case 10:
 
 								break;
 								case 2:
-									goto buy_pass;
+									goto buy_ticket;
 								break;
 							}
 						break;
 						case 2:
-							buy_pass:
-							if (current_rider.buy_pass())
+							buy_ticket:
+							if (current_rider.buy_ticket())
 							{
 								
 							}
